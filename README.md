@@ -54,7 +54,7 @@ JSA DSL — плагин для VSCode, который помогает при �
 * в Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\{server-version}`
 * в Linux и macOS: `~/.config/jsa-dsl/language-server/{server-version}`
 
-![Автоматическая загрузка языкового сервера]()
+![Ручная загрузка языкового сервера](https://github.com/POSIdev-community/AI.DslEditor.Plugin.VSCode/raw/main/media/download_lsp.gif)
 
 Для работы с плагином достаточно открыть файл с расширением `.jsa.dsl`.
 
