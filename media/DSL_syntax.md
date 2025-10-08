@@ -1,5 +1,4 @@
-﻿
-## Описание синтаксиса правил
+﻿## Описание синтаксиса правил
 
 Пользовательские DSL-правила на Python-подобном языке JSA DSL позволяют задавать:
 * PVO — потенциально уязвимые операции;
@@ -51,8 +50,8 @@ Detect (param, vulnType, vulnGrammar)
 ```
 
 где:
-* `vulnType` — тип возможной уязвимости;
-* `vulnGrammar` — тип грамматического контекста.
+* `vulnType` — [тип возможной уязвимости](#Соответствие-уязвимостей-и-их-грамматического-контекста);
+* `vulnGrammar` — [тип грамматического контекста](#Соответствие-уязвимостей-и-их-грамматического-контекста).
 
 Оператор `Return` возвращает результат работы функции:
 * один из параметров: `return foo`;
@@ -116,7 +115,7 @@ namespace java.smoke:
 
 **PHP**
 
-<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 65%;"/><col style="width: 35%;"/></colgroup><thead><tr><th align="left">
+<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
 
 vulnType
 </th><th align="left">
@@ -292,7 +291,7 @@ DB2
 Sqlsrv
 </td></tr><tr><td align="left">
 
-DeserializationOfUntrustedData     
+DeserializationOfUntrustedData
 </td><td align="left">
 
 SerializedObject
@@ -358,7 +357,7 @@ ArbitraryIntData
 
 **Python**
 
-<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 65%;"/><col style="width: 35%;"/></colgroup><thead><tr><th align="left">
+<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
 
 vulnType
 </th><th align="left">
@@ -486,7 +485,7 @@ HttpHeaderName
 HttpHeaderValue
 </td></tr><tr><td align="left">
 
-DeserializationOfUntrustedData     
+DeserializationOfUntrustedData
 </td><td align="left">
 
 ArbitraryBinaryData
@@ -507,7 +506,7 @@ HttpUri
 
 **Go**
 
-<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 65%;"/><col style="width: 35%;"/></colgroup><thead><tr><th align="left">
+<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
 
 vulnType
 </th><th align="left">
@@ -728,7 +727,7 @@ ArbitraryIntData
 
 **Java**
 
-<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 65%;"/><col style="width: 35%;"/></colgroup><thead><tr><th align="left">
+<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
 
 vulnType
 </th><th align="left">
@@ -829,7 +828,7 @@ SQLInjection
 SqlCommon
 </td></tr><tr><td align="left">
 
-JvmTrustBoundaryViolation
+TrustBoundaryViolation
 </td><td align="left">
 
 ArbitraryStringData
@@ -973,7 +972,7 @@ RemoteFileInclusion
 HttpUri
 </td></tr><tr><td align="left">
 
-JvmOrmInjection
+OrmInjection
 </td><td align="left">
 
 ArbitraryStringData
@@ -1012,7 +1011,7 @@ ArbitraryStringData
 
 **JavaScript/TypeScript**
 
-<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 65%;"/><col style="width: 35%;"/></colgroup><thead><tr><th align="left">
+<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
 
 vulnType
 </th><th align="left">
@@ -1137,7 +1136,7 @@ NoSQLInjection
 MongoDB
 </td></tr><tr><td align="left">
 
-DeserializationOfUntrustedData     
+DeserializationOfUntrustedData
 </td><td align="left">
 
 JsonNodeSerialize
