@@ -1,0 +1,43 @@
+END USER LICENSE AGREEMENT FOR JSA DSL IDE PLUGIN
+
+1. GENERAL PROVISIONS
+
+1.1. This License Agreement (hereinafter "Agreement") is a legal agreement between you (hereinafter "User") and the JSA DSL plugin development community (hereinafter "Licensor") for the JSA DSL IDE Plugin software (hereinafter "Software").
+1.2. By using the Software, you agree to be bound by the terms of this Agreement. If you do not accept these terms in full, you must not use the Software.
+1.3. This Software is distributed free of charge for personal, non-commercial use only.
+
+2. LICENSE GRANT
+
+2.1. The Licensor grants you a non-exclusive, non-transferable, royalty-free license to use the Software for personal, non-commercial purposes only, specifically for writing custom DSL rules for security analysis tools.
+2.2. You may install and use the Software on one hardware or virtual platform.
+2.3. You may create one backup copy of the Software for archival purposes only.
+
+3. RESTRICTIONS
+
+3.1. You may NOT:
+   - Use the Software for commercial purposes or to provide services to third parties
+   - Distribute, sublicense, rent, lease, or lend the Software
+   - Modify, reverse engineer, decompile, or disassemble the Software, except as permitted by applicable law
+   - Remove or alter any copyright, trademark, or other proprietary notices
+   - Use the Software for any unlawful purpose
+
+4. INTELLECTUAL PROPERTY
+
+4.1. All intellectual property rights in the Software remain with the Licensor and contributors.
+4.2. The Software includes third-party components governed by their respective licenses. By accepting this Agreement, you also accept the terms of those licenses.
+
+5. NO WARRANTY
+
+5.1. THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+5.2. THE LICENSOR SHALL NOT BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE SOFTWARE.
+
+6. TERMINATION
+
+6.1. This license is effective until terminated. Your rights under this license will terminate automatically without notice if you fail to comply with any term of this Agreement.
+6.2. Upon termination, you must destroy all copies of the Software.
+
+7. GENERAL
+
+7.1. This Agreement constitutes the entire agreement between you and the Licensor.
+7.2. The Licensor reserves the right to modify this Agreement. Continued use of the Software after changes constitutes acceptance of the modified terms.
+7.3. If any provision of this Agreement is found to be unenforceable, the remaining provisions will remain in effect.

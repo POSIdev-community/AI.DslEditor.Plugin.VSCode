@@ -1,0 +1,8 @@
+This product includes the software developed by third-party:
+
+ * adm-zip: https://github.com/cthackers/adm-zip (MIT)
+ * locale-codes: https://github.com/TiagoDanin/Locale-Codes (MIT)
+ * reflect-metadata: https://github.com/rbuckton/reflect-metadata (Apache-2.0)
+ * tar: https://github.com/isaacs/node-tar (ISC)
+ * tsyringe: https://github.com/Microsoft/tsyringe (MIT)
+ * vscode-languageclient: https://github.com/Microsoft/vscode-languageserver-node (MIT)
