@@ -1,13 +1,13 @@
-## Rule syntax description
+﻿## Описание синтаксиса правил
 
-Custom DSL rules in the Python-like JSA DSL allow you to set:
-* PVOs: potentially vulnerable operations.
-* TDEs: taint data entry points.
-* Filters: filtering functions that process user input parameters. If they receive potentially malicious values, they filter these out and return safe values.
+Пользовательские DSL-правила на Python-подобном языке JSA DSL позволяют задавать:
+* PVO — потенциально уязвимые операции;
+* TDE — точки входа пользовательских данных;
+* Filter — фильтрующие функции, которые обрабатывают входные пользовательские параметры: получая потенциально опасные значения, они возвращают их отфильтрованными и, соответственно, безопасными.
 
-**Namespace**
+**Блок namespace**
 
-The root element is the `namespace` block, which matches a module in a particular programming language (for example, a JavaScript module, Java package, or .NET namespace):
+Корневым элементом является блок `namespace`, который соответствует модулю в конкретном языке программирования (например, JavaScript-модулю, Java-пакету или пространству имен .NET):
 
 ```
 namespace example:
@@ -15,88 +15,88 @@ namespace example:
    function_definitions
 ```
 
-Classes and functions are declared in the `namespace`. The same `namespace` can be declared in multiple files, but all declarations of classes and functions inside these files must be unique.
+В `namespace` объявляются классы и функции. Один и тот же `namespace` может быть объявлен в нескольких файлах, но все объявления классов и функций внутри этих файлов должны быть уникальными.
 
-**Class declaration**
+**Объявление класса**
 
-When creating a class, you can specify one or more base classes. This allows their attributes and methods to be inherited:
+При создании класса можно указать один или несколько базовых классов. Это позволяет наследовать их атрибуты и методы:
 
 ```
 class ClassName[(Base[, Base]*)]:
    function_definitions
 ```
 
-**Function declaration**
+**Объявление функций**
 
-If you declare a function in a dynamically typed language, you do not need to specify parameter types (unlike in statically typed languages):
+При объявлении функции в динамически типизированных языках указание типов параметров не требуется, тогда как в статически типизированных оно обязательно:
 
 ```
 def [returnType] funcName([[paramType] paramName[, [paramType] paramName]*]):
    function_body
 ```
 
-It is recommended that you explicitly specify the value type to be returned even in dynamically typed languages. This improves code analysis, especially for constructs with call chains like `new DslClass().Bar().Baz()`.
+Рекомендуется явно указывать тип возвращаемого значения даже в динамически типизированных языках. Это улучшает анализ кода, особенно в конструкциях с цепочкой вызовов вида `new DslClass().Bar().Baz()`.
 
-If the function does not return any value (`void`, `undefined`, `None`), the type can be omitted.
+Если функция ничего не возвращает (`void`, `undefined`, `None`), тип можно не указывать.
 
-**Function body**
+**Тело функции**
 
-The function body can contain one or more `Detect` operators and an optional `Return` operator.
+Тело функции может содержать один или несколько операторов `Detect` и необязательный оператор `Return`.
 
-A `Detect` operator is used to specify a vulnerable parameter and describe a potential vulnerability:
+Оператор `Detect` используется для указания уязвимого параметра и описания потенциальной уязвимости:
 
 ```
 Detect (param, vulnType, vulnGrammar)
 ```
 
-where:
-* `vulnType` is a [possible vulnerability type](#Matching-of-vulnerabilities-and-grammatical-contexts).
-* `vulnGrammar` is the [grammatical context type](#Matching-of-vulnerabilities-and-grammatical-contexts).
+где:
+* `vulnType` — [тип возможной уязвимости](#Соответствие-уязвимостей-и-их-грамматического-контекста);
+* `vulnGrammar` — [тип грамматического контекста](#Соответствие-уязвимостей-и-их-грамматического-контекста).
 
-The `Return` operator returns the function result:
-* one parameter: `return foo`
-* filtered parameter: `return foo.filter(SqlCommon)`
-* parameter marked as potentially malicious (Taint): `return Taint`
+Оператор `Return` возвращает результат работы функции:
+* один из параметров: `return foo`;
+* отфильтрованный параметр: `return foo.filter(SqlCommon)`;
+* параметр, отмеченный как потенциально опасный (Taint): `return Taint`.
 
-## Rule examples
+## Примеры правил
 
-Below, you can find examples of DSL rules for dynamically and statically typed languages.
+Ниже приведены примеры DSL-правил для динамически и статически типизированных языков.
 
-**Example for dynamically typed languages**
+**Пример для динамически типизированных языков**
 
 ```
-namespace dslClassTest: # module declaration
-  class PvoClass: # class declaration
-    def pvoFunc(self, param): # function declaration
-      Detect(param, SQLInjection, SqlCommon) # details of a vulnerable parameter and parameters of the potential vulnerability
+namespace dslClassTest: # объявление модуля
+  class PvoClass: # объявление класса
+    def pvoFunc(self, param): # объявление функции
+      Detect(param, SQLInjection, SqlCommon) # детализация уязвимого параметра функции и параметров потенциальной уязвимости
 
-  class PvoInheritor(PvoClass): # child class declaration; the parent class must be declared in the same module
-    pass # without additional methods
+  class PvoInheritor(PvoClass): # объявление класса-наследника, класс-родитель должен быть объявлен в этом же модуле
+    pass # без дополнительных методов
 
-namespace dslTest: # declaration of another module
-  def pvoFunc(param): # declaration of a potentially vulnerable module function
-      Detect(param, SQLInjection, SqlCommon) # details of the vulnerability
-  def taintFunc(): # TDE function declaration
-    return Taint # the function returns a potentially dangerous value
+namespace dslTest: # объявление другого модуля
+  def pvoFunc(param): # объявление потенциально уязвимой функции модуля
+      Detect(param, SQLInjection, SqlCommon) # детализация уязвимости
+  def taintFunc(): # объявление функции TDE
+    return Taint # функция возвращает потенциально опасное значение
 
-namespace dslFilter: # declaration of a module with filtering functions
-  def filterSqlCommon(foo): # adding a filter function
-    return foo.filter(SqlCommon) # the function returns the foo value and makes it safe to be injected into the SqlCommon grammar
+namespace dslFilter: # объявление модуля с фильтрующими функциями
+  def filterSqlCommon(foo): # добавление функции-фильтра
+    return foo.filter(SqlCommon) # функция возвращает значение параметра foo, сделав его безопасным для инъекций в грамматику SqlCommon
 
-  def filterSQLInjection(foo): # adding a filter function
-    return foo.filter(SQLInjection) # the function returns the foo value and makes it safe for the SQLInjection vulnerability type
+  def filterSQLInjection(foo): # добавление функции-фильтра
+    return foo.filter(SQLInjection) # функция возвращает значение параметра foo, сделав его безопасным для типа уязвимостей SQLInjection
 ```
 
-**Example for statically typed languages*
+**Пример для статически типизированных языков**
 
 ```
 namespace java.smoke:
   class PvoClass:
-    def pvoMethod(String param): # parameter type; if no value is returned, it is considered void or similar
+    def pvoMethod(String param): # тип параметра, если ничего не возвращается, то он считается void или аналогом
       Detect(param, SQLInjection, SqlCommon)
 
   class TaintClass:
-    def String getTaint(): # return type
+    def String getTaint(): # возвращаемый тип
       return Taint
 
   class Filter:
@@ -107,15 +107,15 @@ namespace java.smoke:
       return foo.filter(SQLInjection)
 ```
 
-## Matching of vulnerabilities and grammatical contexts
+## Соответствие уязвимостей и их грамматического контекста
 
-According to the DSL rule syntax, each vulnerability type must match a context, which is an environment or conditions that define where the vulnerability exists in the system.
+Согласно синтаксису DSL-правил, каждому типу обнаруживаемой уязвимости должен соответствовать контекст — окружение или условия, при которых уязвимость существует в системе.
 
-Currently, restrictions for matching vulnerability types and contexts apply to all languages that support custom DSL rule creation. Allowed combinations of `vulnType` and `vulnGrammar` parameters are listed in the tables below.
+На текущий момент для всех языков, поддерживающих создание пользовательских DSL-правил, действуют ограничения на соответствие типов уязвимостей и контекстов. Наборы допустимых комбинаций параметров `vulnType` и `vulnGrammar` приведны таблицах ниже.
 
 **PHP**
 
-<table><caption>Possible combinations of vulnType and vulnGrammar parameters</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
+<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
 
 vulnType
 </th><th align="left">
@@ -357,7 +357,7 @@ ArbitraryIntData
 
 **Python**
 
-<table><caption>Possible combinations of vulnType and vulnGrammar parameters</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
+<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
 
 vulnType
 </th><th align="left">
@@ -506,7 +506,7 @@ HttpUri
 
 **Go**
 
-<table><caption>Possible combinations of vulnType and vulnGrammar parameters</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
+<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
 
 vulnType
 </th><th align="left">
@@ -727,7 +727,7 @@ ArbitraryIntData
 
 **Java**
 
-<table><caption>Possible combinations of vulnType and vulnGrammar parameters</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
+<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
 
 vulnType
 </th><th align="left">
@@ -1011,7 +1011,7 @@ ArbitraryStringData
 
 **JavaScript/TypeScript**
 
-<table><caption>Possible combinations of vulnType and vulnGrammar parameters</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
+<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
 
 vulnType
 </th><th align="left">

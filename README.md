@@ -1,155 +1,161 @@
-## Обзор
+<div align="right">
+  <p>
+    <strong>English</strong> | <a href="https://github.com/POSIdev-community/AI.DslEditor.Plugin.VSCode/blob/main/README.ru.md">Русский</a>
+  </p>
+</div>
 
-JSA DSL — плагин для VSCode, который помогает при написании пользовательских [DSL-правил](https://github.com/POSIdev-community/AI.DslEditor.Plugin.VSCode/blob/main/media/DSL_syntax.md), обеспечивая полноценную подсветку синтаксиса JSA DSL, интеллектуальное автодополнение и комплексную диагностику кода. Дополнительно плагин поддерживает быстрые исправления ошибок, навигацию по коду и автоматическое форматирование при изменении файлов `.jsa.dsl`.
+## Overview
 
-## Ключевые возможности
+JSA DSL is a VSCode plugin that helps to create custom [DSL rules](https://github.com/POSIdev-community/AI.DslEditor.Plugin.VSCode/blob/main/media/DSL_syntax.md). It provides advanced highlighting of JSA DSL syntax, smart autocomplete, and comprehensive code diagnostics. The plugin also supports quick bug fixes, code navigation, and automatic formatting when editing `.jsa.dsl` files.
 
-**Подсветка синтаксиса**
+## Key features
 
-Полная поддержка цветового выделения для всех конструкций JSA DSL.
+**Syntax highlighting**
 
-**Интеллектуальное автодополнение**
+Support of colored highlighting for all JSA DSL constructs.
 
-Автодополнение языковых конструкций в режиме реального времени с учетом контекста и синтаксических правил.
+**Smart autocomplete**
 
-**Расширенная диагностика кода**
+Real-time autocompletion of language constructs that considers the context and syntax rules.
 
-Плагин предоставляет комплексную проверку на трех уровнях:
-* Синтаксический анализ:
-   * выявление ошибок структуры кода (несоответствие скобок, отсутствие точек с запятой, незавершенные блоки);
-   * проверка корректности названий пространств имен, классов и функций;
-   * валидация аргументов функций `Detect` и `filter`.
-* Семантическая проверка:
-   * обнаружение дублирующихся объявлений классов и функций;
-   * проверка неизвестных PVO Grammar-идентификаторов и типов уязвимостей;
-   * анализ соответствия типов данных и разрешения ссылок в фильтрах;
-   * выявление множественных операторов `return`;
-   * проверка дублирования названий параметров функций и базовых классов;
-   * запрет вложенных объявлений классов и функций.
-* Анализ качества кода:
-   * определение избыточных операторов `pass`;
-   * обнаружение неиспользуемых параметров в функциях.
+**Advanced code diagnostics**
 
-**Контекстные подсказки**
+The plugin provides a comprehensive three-level check that includes:
+* Syntax analysis:
+   * Detection of errors in the code structure (unmatched brackets, missing semicolons, unfinished blocks)
+   * Name validation for namespaces, classes, and functions
+   * Validation of arguments of the `Detect` and `filter` functions
+* Semantic check:
+   * Detection of duplicate declarations of classes and functions
+   * Checking for unknown PVO Grammar IDs and vulnerability types
+   * Analysis of data type matches and usage of allowed references
+   * Detection of multiple `return` operators
+   * Checking for duplicate names of function parameters and base classes
+   * Disabling of nested class and function declarations
+* Code quality analysis:
+   * Detection of unnecessary `pass` operators
+   * Detection of unused parameters in functions
 
-Показ справочной информации о синтаксисе и семантике элементов кода при наведении курсора.
+**Context tooltips**
 
-**Быстрые исправления (Quick Fixes)**
+Hovering over a code element shows information about the syntax and semantics.
 
-Удаление избыточных операторов `pass` и автоматическое переименование или удаление неиспользуемых параметров
+**Quick Fixes**
 
-**Навигация по коду**
+Deletion of unnecessary `pass` operators and automatic renaming or deletion of unused parameters
 
-Поддержка следующих команд для ускорения навигации и рефакторинга кода:
-* **Go to Definition**: переход к исходному коду функций и классов;
-* **Find References**: поиск всех упоминаний выбранного элемента в проекте.
+**Code navigation**
 
-**Форматирование в реальном времени**
+Support of the following commands to speed up code navigation and refactoring:
+* **Go to Definition**: go to the source code of functions and classes
+* **Find References**: find all references to the selected element in the project
 
-Автоматическое приведение кода к единому стилю при вводе (активно по умолчанию для файлов `.jsa.dsl`).
+**Real-time formatting**
 
-## Установка и использование
+Automatic stylistic unification of code as you enter it (active by default for `.jsa.dsl` files)
 
-При установке плагина языковой сервер загружается и запускается автоматически. Файлы сервера сохраняются по следующим путям:
-* В Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\{server-version}`
-* В Linux и macOS: `~/.config/jsa-dsl/language-server/{server-version}`
+## Installation and use
 
-![Автоматическая загрузка языкового сервера](https://github.com/POSIdev-community/AI.DslEditor.Plugin.VSCode/raw/main/media/download_lsp.gif)
+When you install the plugin, the language server is downloaded and started automatically. Server files are saved to the following locations:
+* In Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\{server-version}`
+* In Linux and macOS: `~/.config/jsa-dsl/language-server/{server-version}`
 
-Для работы с плагином достаточно открыть файл с расширением `.jsa.dsl`.
+![Automatic download of the language server](https://github.com/POSIdev-community/AI.DslEditor.Plugin.VSCode/raw/main/media/download_lsp.gif)
 
-### Ручная установка языкового сервера
+To use the plugin, just open the `.jsa.dsl` file.
 
-Для корректной работы плагина требуется языковой сервер JSA DSL. Установить его можно автоматически или вручную, скачав его по ссылкам в инструкции ниже.
+## Installing the language server manually
 
-Чтобы установить языковой сервер вручную:
+The plugin requires the JSA DSL language server for correct operation. The server can be installed automatically or manually (by downloading it from the links provided below).
 
-1. Скачайте архив с языковым сервером, используя одну из ссылок:
+To install the language server manually:
 
-   * Для Windows: [скачать](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.Windows/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.zip)
+1. Download the language server archive using one of the links:
 
-   * Для Linux: [скачать](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.Linux/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
+   * For Windows: [download](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.Windows/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.zip)
 
-   * Для MacOS (Intel): [скачать](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.MacOS/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
+   * For Linux: [download](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.Linux/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
 
-   * Для MacOS (Arm): [скачать](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.MacOS_arm64/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
+   * For macOS (Intel): [download](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.MacOS/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
 
-2. Распакуйте архив в одно из следующих расположений:
+   * For macOS (ARM): [download](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.MacOS_arm64/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
 
-   * В Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\0.1.0.62\`
+2. Unpack the archive to one of the following locations:
 
-   * В Linux: `~/.config/jsa-dsl/language-server/0.1.0.62/`
+   * In Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\0.1.0.62\`
 
-   * В macOS: `~/.config/jsa-dsl/language-server/0.1.0.62/`
+   * In Linux: `~/.config/jsa-dsl/language-server/0.1.0.62/`
 
-   > **Примечание.** Вы также можете распаковать сервер в любую другую директорию и указать путь к ней в настройках плагина через параметр `jsa.dsl.languageServer.customPath` (см. раздел [Параметры плагина](#параметры-плагина)).
+   * In macOS: `~/.config/jsa-dsl/language-server/0.1.0.62/`
 
-3. В MacOS выполните следующие команды для удаления атрибута `com.apple.quarantine`, подписи бинарного файла и установки прав на выполнение:
+   > **Note.** You can also extract the server to any other directory and specify the path in the plugin settings using the `jsa.dsl.languageServer.customPath` parameter (see the [Plugin settings](#plugin-settings) section).
+
+3. In macOS, run the commands provided below to delete the `com.apple.quarantine` attribute, sign the binary file, and set execution permissions:
 
    ```bash
-   xattr -cr <путь_к_папке_сервера>/JSA.DSL.LSP
-   codesign --sign - --force --deep <путь_к_папке_сервера>/JSA.DSL.LSP
+   xattr -cr <path_to_server_folder>/JSA.DSL.LSP
+   codesign --sign - --force --deep <path_to_server_folder>/JSA.DSL.LSP
    ```
 
-4. В Linux/MacOS установите права на выполнение для исполняемого файла:
+4. In Linux/macOS, set execute permissions for the executable file:
 
    ```bash
-   chmod +x <путь_к_папке_сервера>/JSA.DSL.LSP
+   chmod +x <path_to_server_folder>/JSA.DSL.LSP
    ```
 
-5. Перезапустите плагин, выполнив команду `JSA DSL: Restart plugin`.
+5. Restart the plugin by running the `JSA DSL: Restart plugin` command.
 
-После перезапуска плагин должен обнаружить установленный языковой сервер и начать его использовать. Если плагин не обнаруживает сервер, проверьте следующее:
-* Файлы распакованы в правильную директорию
-* Права доступа установлены корректно (Linux/macOS)
-* Проверьте логи в **View** → **Output** → **JSA DSL** на наличие ошибок
+After restart, the plugin should detect the installed language server and start using it. If the plugin does not detect the server, make sure that:
+* The files were extracted to the right directory.
+* Access permissions are set correctly (Linux/macOS).
+* The logs in **View** → **Output** → **JSA DSL** don't contain any errors.
 
-## Поддерживаемые расширения файлов
+## Supported file extensions
 
-Плагин автоматически ассоциируется с файлами следующих расширений:
-* `.dsl` — общее расширение для DSL-файлов (**включено по умолчанию**);
-* `.jsa.dsl` — основное рекомендуемое расширение для JSA DSL-скриптов.
+The plugin is automatically associated with files with the following extensions:
+* `.dsl`, the generic extension for DSL files (** enabled by default**)
+* `.jsa.dsl`, the main recommended extension for JSA DSL scripts
 
-Это позволяет работать с JSA DSL-скриптами независимо от используемого расширения файла.
+This allows you to work with JSA DSL scripts regardless of the file extension used.
 
-**Возможные конфликты с другими плагинами**
+**Possible conflicts with other plugins**
 
-Расширение `.dsl` также используется другими инструментами и плагинами (например, Xtext DSL, Jenkins Job DSL, Gradle DSL). Если у вас установлены другие плагины для работы с `.dsl`—файлами и возникли конфликты, вы можете отключить автоматическую ассоциацию:
+The `.dsl` extension is also used by other tools and plugins (such as Xtext DSL, Jenkins Job DSL, or Gradle DSL). If you have other plugins for `.dsl` files installed and experience conflicts, you can disable automatic association.
 
-Чтобы отключить автоматическую ассоциацию:
+To disable automatic association:
 
-1. Откройте [параметры плагина](#параметры-плагина).
+1. Open the [plugin settings](#plugin-settings).
 
-2. Установите параметр `jsa.dsl.associateAllDslFiles` в значение `false`.
+2. Set the `jsa.dsl.associateAllDslFiles` option to `false`.
 
-3. Перезапустите плагин командой `JSA DSL: Restart plugin`.
+3. Restart the plugin by running the `JSA DSL: Restart plugin` command.
 
-   После этого плагин будет работать только с файлами `.jsa.dsl`.
+   The plugin will then work only with `.jsa.dsl` files.
 
-## Команды и параметры плагина
+## Plugin settings and commands
 
-### Параметры плагина
+### Plugin settings
 
-Вы можете настроить параметры плагина, выбрав в главном меню **File** → **Preferences** → **Settings** или нажав клавиши <kbd>Ctrl</kbd>+<kbd>,</kbd>.
+You can go to the plugin settings by selecting **File** → **Preferences** → **Settings** in the main menu or by pressing <kbd>Ctrl</kbd>+<kbd>,</kbd>.
 
-Страница настройки плагина содержит следующие параметры:
-* `jsa.dsl.languageServer.customPath` — пользовательский путь к языковому серверу. По умолчанию не задан, используется стандартный путь (см. раздел [Установка и использование](#установка-и-использование)).
+The plugin configuration page contains the following settings:
+* `jsa.dsl.languageServer.customPath`, a custom path to the language server. By default, there's no custom path and the standard path is used (see the [Installation and use](#installation-and-use) section).
 
-* `jsa.dsl.associateAllDslFiles` — включает обработку всех `.dsl`-файлов наравне с файлами `.jsa.dsl`. По умолчанию — `true`. Требует перезапуска плагина после изменения.
-   >***Примечание.** Если у вас возникают конфликты с другими плагинами, обрабатывающими `.dsl`-файлы, отключите этот параметр.*
+* `jsa.dsl.associateAllDslFiles` enables the processing of all `.dsl` files along with `.jsa.dsl` files. The default value is`true`. If changed, plugin restart is required.
+   >***Note.** If you encounter conflicts with other plugins that process `.dsl` files, disable this option.*
 
-* `jsa.dsl.diagnostics.enableUnusedParameterWarning` — включает предупреждения о неиспользуемых параметрах функций. По умолчанию — `false`.
+* `jsa.dsl.diagnostics.enableUnusedParameter` enables warnings for unused function parameters. The default value is `false`.
 
-* `jsa.dsl.diagnostics.enableUnnecessaryPassWarning` — включает предупреждения о лишних операторах `pass`. По умолчанию — `true`.
+* `jsa.dsl.diagnostics.enableUnnecessaryPassWarning` enables warnings for unnecessary `pass` statements. The default value is`true`.
 
-* `jsa.dsl.diagnostics.enableTypeCheckWarning` — включает предупреждения о несоответствии типов возвращаемых данных. По умолчанию — `true`.
+* `jsa.dsl.diagnostics.enableTypeCheckWarning` enables warnings for return type mismatches. The default value is`true`.
 
-### Команды для работы с плагином
+## Plugin commands
 
-Для работы с плагином вы можете вводить в command palette следующие команды:
-* `JSA DSL: Install language server` — установка языкового сервера вручную. Команда доступна, если сервер еще не установлен.
-* `JSA DSL: Restart plugin` — перезапуск плагина и языкового сервера. Может понадобиться при обновлении параметров или при устранении проблем.
+To work with the plugin, you can enter the following commands into the command palette:
+* `JSA DSL: Install language server`. Installs the language server manually. Available if the server is not installed.
+* `JSA DSL: Restart plugin`. Restarts the plugin and language server. May be needed when updating settings or fixing issues.
 
-## Поддержка и обратная связь
+## Support and feedback
 
-Если у вас возникли вопросы по работе плагина, вы обнаружили проблему или хотите предложить улучшение, оставьте соответствующее сообщение в репозитории проекта.
+If you have any questions about using the plugin, detect an issue, or want to suggest an improvement, leave a message in the project repository.
