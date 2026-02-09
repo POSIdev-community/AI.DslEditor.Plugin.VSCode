@@ -80,6 +80,8 @@ JSA DSL — плагин для VSCode, который помогает при �
 
    * Для macOS (ARM): [скачать](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.MacOS_arm64/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
 
+   > **Примечание.** Вы можете скачать **self-contained сборки** плагина для основных платформ (Windows, Linux, macOS). Такие сборки уже содержат языковой сервер внутри и не требуют его отдельной загрузки.
+
 2. Распакуйте архив в одно из следующих расположений:
 
    * В Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\0.1.0.62\`

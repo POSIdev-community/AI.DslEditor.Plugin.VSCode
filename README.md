@@ -80,6 +80,8 @@ To install the language server manually:
 
    * For macOS (ARM): [download](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.MacOS_arm64/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
 
+   > **Note.** You can use **self-contained versions** of the extension for major platforms (Windows, Linux, macOS). These versions already include the language server and do not require additional downloads.
+
 2. Unpack the archive to one of the following locations:
 
    * In Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\0.1.0.62\`
