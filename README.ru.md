@@ -16,7 +16,8 @@ JSA DSL — плагин для VSCode, который помогает при �
 
 **Интеллектуальное автодополнение**
 
-Автодополнение языковых конструкций в режиме реального времени с учетом контекста и синтаксических правил.
+Автодополнение языковых конструкций в режиме реального времени с учётом контекста и синтаксических правил,
+включая PVO-грамматики, типы уязвимостей и доступные для `filter` weakness/secret types.
 
 **Расширенная диагностика кода**
 
@@ -24,21 +25,22 @@ JSA DSL — плагин для VSCode, который помогает при �
 * Синтаксический анализ:
    * выявление ошибок структуры кода (несоответствие скобок, отсутствие точек с запятой, незавершенные блоки);
    * проверка корректности названий пространств имен, классов и функций;
-   * валидация аргументов функций `Detect` и `filter`.
+   * валидация аргументов функций `Detect` и `filter`, включая несколько и цепочки фильтров.
 * Семантическая проверка:
    * обнаружение дублирующихся объявлений классов и функций;
    * проверка неизвестных PVO Grammar-идентификаторов и типов уязвимостей;
    * анализ соответствия типов данных и разрешения ссылок в фильтрах;
    * выявление множественных операторов `return`;
    * проверка дублирования названий параметров функций и базовых классов;
-   * запрет вложенных объявлений классов и функций.
+   * выявление запрещённых вложенных объявлений классов и функций, в том числе в восстановленном parser-дереве.
 * Анализ качества кода:
    * определение избыточных операторов `pass`;
    * обнаружение неиспользуемых параметров в функциях.
 
 **Контекстные подсказки**
 
-Показ справочной информации о синтаксисе и семантике элементов кода при наведении курсора.
+Показ справочной информации о синтаксисе и семантике элементов кода при наведении курсора, включая
+актуальные .NET/Ruby PVO-грамматики и доступные для `filter` weakness/secret types.
 
 **Быстрые исправления (Quick Fixes)**
 
@@ -56,7 +58,7 @@ JSA DSL — плагин для VSCode, который помогает при �
 
 ## Установка и использование
 
-При установке плагина языковой сервер загружается и запускается автоматически. Файлы сервера сохраняются по следующим путям:
+Плагин публикуется в двух вариантах. Platform-specific self-contained VSIX уже содержит языковой сервер и устанавливает его без обращения к сети. Обычный platform-independent VSIX автоматически загружает сервер при первом запуске. В обоих случаях файлы сервера сохраняются по следующим путям:
 * В Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\{server-version}`
 * В Linux и macOS: `~/.config/jsa-dsl/language-server/{server-version}`
 
@@ -72,23 +74,23 @@ JSA DSL — плагин для VSCode, который помогает при �
 
 1. Скачайте архив с языковым сервером, используя одну из ссылок:
 
-   * Для Windows: [скачать](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.Windows/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.zip)
+   * Для Windows: [скачать](https://update.ptsecurity.ru/api/v6/products/JSA.DSL.LSP-Server.Windows/0.1.0.67/download/jsa.dsl.lsp.server-0.1.0.67.zip)
 
-   * Для Linux: [скачать](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.Linux/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
+   * Для Linux: [скачать](https://update.ptsecurity.ru/api/v6/products/JSA.DSL.LSP-Server.Linux/0.1.0.67/download/jsa.dsl.lsp.server-0.1.0.67.tar.gz)
 
-   * Для macOS (Intel): [скачать](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.MacOS/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
+   * Для macOS (Intel): [скачать](https://update.ptsecurity.ru/api/v6/products/JSA.DSL.LSP-Server.MacOS/0.1.0.67/download/jsa.dsl.lsp.server-0.1.0.67.tar.gz)
 
-   * Для macOS (ARM): [скачать](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.MacOS_arm64/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
+   * Для macOS (ARM): [скачать](https://update.ptsecurity.ru/api/v6/products/JSA.DSL.LSP-Server.MacOS_arm64/0.1.0.67/download/jsa.dsl.lsp.server-0.1.0.67.tar.gz)
 
    > **Примечание.** Вы можете скачать **self-contained сборки** плагина для основных платформ (Windows, Linux, macOS). Такие сборки уже содержат языковой сервер внутри и не требуют его отдельной загрузки.
 
 2. Распакуйте архив в одно из следующих расположений:
 
-   * В Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\0.1.0.62\`
+   * В Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\0.1.0.67\`
 
-   * В Linux: `~/.config/jsa-dsl/language-server/0.1.0.62/`
+   * В Linux: `~/.config/jsa-dsl/language-server/0.1.0.67/`
 
-   * В macOS: `~/.config/jsa-dsl/language-server/0.1.0.62/`
+   * В macOS: `~/.config/jsa-dsl/language-server/0.1.0.67/`
 
    > **Примечание.** Вы также можете распаковать сервер в любую другую директорию и указать путь к ней в настройках плагина через параметр `jsa.dsl.languageServer.customPath` (см. раздел [Параметры плагина](#параметры-плагина)).
 

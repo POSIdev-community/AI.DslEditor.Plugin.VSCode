@@ -39,9 +39,16 @@ def [returnType] funcName([[paramType] paramName[, [paramType] paramName]*]):
 
 Если функция ничего не возвращает (`void`, `undefined`, `None`), тип можно не указывать.
 
+Ссылка на тип может быть точечным именем или строкой в обратных кавычках. Обратные кавычки нужны для имён, которые нельзя выразить обычным DSL-идентификатором:
+
+```
+def `java.util.Map<java.lang.String, ?>` values():
+  return Taint
+```
+
 **Тело функции**
 
-Тело функции может содержать один или несколько операторов `Detect` и необязательный оператор `Return`.
+Тело функции может содержать один или несколько операторов `Detect`, `DetectReachability` и необязательный оператор `return`.
 
 Оператор `Detect` используется для указания уязвимого параметра и описания потенциальной уязвимости:
 
@@ -53,10 +60,22 @@ Detect (param, vulnType, vulnGrammar)
 * `vulnType` — [тип возможной уязвимости](#Соответствие-уязвимостей-и-их-грамматического-контекста);
 * `vulnGrammar` — [тип грамматического контекста](#Соответствие-уязвимостей-и-их-грамматического-контекста).
 
-Оператор `Return` возвращает результат работы функции:
+`DetectReachability` помечает точку кода для проверки её достижимости. Это оператор без аргументов и скобок:
+
+```
+def target():
+  DetectReachability
+```
+
+Оператор `return` возвращает результат работы функции:
 * один из параметров: `return foo`;
 * отфильтрованный параметр: `return foo.filter(SqlCommon)`;
+* параметр с несколькими фильтрами: `return foo.filter(SqlCommon, SQLInjection)`;
+* цепочку фильтров: `return foo.filter(SqlCommon).filter(CrossSiteScripting)`;
 * параметр, отмеченный как потенциально опасный (Taint): `return Taint`.
+
+В `filter` можно передавать обычные типы уязвимостей, PVO-грамматики, типы слабостей (weakness) и секретов (secret), включённые во встроенные каталоги языкового сервера.
+Отдельные DSL-вызовы `DetectWeakness` и `DetectSecret` пока не входят в поддерживаемый runtime-контракт.
 
 ## Примеры правил
 
@@ -109,1075 +128,208 @@ namespace java.smoke:
 
 ## Соответствие уязвимостей и их грамматического контекста
 
-Согласно синтаксису DSL-правил, каждому типу обнаруживаемой уязвимости должен соответствовать контекст — окружение или условия, при которых уязвимость существует в системе.
-
-На текущий момент для всех языков, поддерживающих создание пользовательских DSL-правил, действуют ограничения на соответствие типов уязвимостей и контекстов. Наборы допустимых комбинаций параметров `vulnType` и `vulnGrammar` приведны таблицах ниже.
-
-**PHP**
-
-<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
-
-vulnType
-</th><th align="left">
-
-vulnGrammar
-</th></tr></thead><tbody><tr><td align="left">
-
-CrossSiteScripting
-</td><td align="left">
-
-HtmlText
-</td></tr><tr><td align="left">
-
-RemoteCodeExecution
-</td><td align="left">
-
-PhpCode
-
-
-PhpInfo
-
-
-PhpInfoBrackets
-
-
-PhpAssert
-</td></tr><tr><td align="left">
-
-OSCommanding
-</td><td align="left">
-
-CommandLineArguments
-
-
-CommandLineArgumentsSilent
-</td></tr><tr><td align="left">
-
-SQLInjection
-</td><td align="left">
-
-SqlCommon
-
-
-Postgres
-
-
-Sqlite
-
-
-Sqlite3
-
-
-IBase
-
-
-Informix
-
-
-Ingres
-
-
-MsSql
-
-
-OracleSql
-
-
-Sybase
-</td></tr><tr><td align="left">
-
-ArbitraryFileCreation
-</td><td align="left">
-
-FileName
-
-
-ArbitraryFileNameShort
-</td></tr><tr><td align="left">
-
-ArbitraryFileModification
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryFileReading
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryFileDeletion
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryFileCopying
-</td><td align="left">
-
-FileName
-
-
-ArbitraryFileCopyingDestination
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryListing
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryCreation
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryMoving
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryDeletion
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-UnrestrictedFileUpload
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-LocalFileInclusion
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-RemoteFileInclusion
-</td><td align="left">
-
-HttpUri
-</td></tr><tr><td align="left">
-
-ServerSideRequestForgery
-</td><td align="left">
-
-Host
-
-
-SSRFHostWithPort
-
-
-HttpUri
-
-
-IBase
-
-
-Postgres
-
-
-Cubrid
-
-
-DB2
-
-
-Sqlsrv
-</td></tr><tr><td align="left">
-
-DeserializationOfUntrustedData
-</td><td align="left">
-
-SerializedObject
-
-
-SerializedArrayObject
-
-
-PharArchivePath
-</td></tr><tr><td align="left">
-
-LdapInjection
-</td><td align="left">
-
-Ldap
-</td></tr><tr><td align="left">
-
-HttpResponseSplitting
-</td><td align="left">
-
-HttpHeaderValue
-</td></tr><tr><td align="left">
-
-OpenRedirect
-</td><td align="left">
-
-HttpUri
-</td></tr><tr><td align="left">
-
-LogForging
-</td><td align="left">
-
-LogEntry
-</td></tr><tr><td align="left">
-
-XmlExternalEntity
-</td><td align="left">
-
-XmlDocument
-
-
-HttpUri
-</td></tr><tr><td align="left">
-
-SmtpHeaderInjection
-</td><td align="left">
-
-SmtpHeader
-</td></tr><tr><td align="left">
-
-XPathInjection
-</td><td align="left">
-
-XPath
-</td></tr><tr><td align="left">
-
-ResourceExhaustion
-</td><td align="left">
-
-ArbitraryIntData
-</td></tr></tbody></table>
-
-
-**Python**
-
-<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
-
-vulnType
-</th><th align="left">
-
-vulnGrammar
-</th></tr></thead><tbody><tr><td align="left">
-
-ArbitraryFileCreation
-</td><td align="left">
-
-FileName
-
-
-ArbitraryIntData
-</td></tr><tr><td align="left">
-
-ArbitraryFileDeletion
-</td><td align="left">
-
-FileName
-
-
-ArbitraryIntData
-</td></tr><tr><td align="left">
-
-ArbitraryFileModification
-</td><td align="left">
-
-FileName
-
-
-ArbitraryIntData
-</td></tr><tr><td align="left">
-
-ArbitraryFileReading
-</td><td align="left">
-
-FileName
-
-
-ArbitraryIntData
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryListing
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryCreation
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryMoving
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryDeletion
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-CrossSiteScripting
-</td><td align="left">
-
-HtmlText
-</td></tr><tr><td align="left">
-
-SQLInjection
-</td><td align="left">
-
-SqlCommon
-</td></tr><tr><td align="left">
-
-OpenRedirect
-</td><td align="left">
-
-HttpUri
-</td></tr><tr><td align="left">
-
-OSCommanding
-</td><td align="left">
-
-CommandLineArguments
-</td></tr><tr><td align="left">
-
-RemoteCodeExecution
-</td><td align="left">
-
-PythonCode
-</td></tr><tr><td align="left">
-
-UncontrolledDataManipulation
-</td><td align="left">
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-LocalFileInclusion
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-CookieInjection
-</td><td align="left">
-
-HttpCookieName
-
-
-HttpCookieValue
-</td></tr><tr><td align="left">
-
-HttpHeaderInjection
-</td><td align="left">
-
-HttpHeaderName
-
-
-HttpHeaderValue
-</td></tr><tr><td align="left">
-
-DeserializationOfUntrustedData
-</td><td align="left">
-
-ArbitraryBinaryData
-</td></tr><tr><td align="left">
-
-LogForging
-</td><td align="left">
-
-LogEntry
-</td></tr><tr><td align="left">
-
-ServerSideRequestForgery
-</td><td align="left">
-
-HttpUri
-</td></tr></tbody></table>
-
-
-**Go**
-
-<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
-
-vulnType
-</th><th align="left">
-
-vulnGrammar
-</th></tr></thead><tbody><tr><td align="left">
-
-CrossSiteScripting
-</td><td align="left">
-
-HtmlText
-</td></tr><tr><td align="left">
-
-OpenRedirect
-</td><td align="left">
-
-HttpUri
-</td></tr><tr><td align="left">
-
-ServerSideRequestForgery
-</td><td align="left">
-
-HttpUri
-</td></tr><tr><td align="left">
-
-OSCommanding
-</td><td align="left">
-
-CommandLineArguments
-</td></tr><tr><td align="left">
-
-ArbitraryFileCreation
-</td><td align="left">
-
-FileName
-
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-ArbitraryFileModification
-</td><td align="left">
-
-FileName
-
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-ArbitraryFileReading
-</td><td align="left">
-
-FileName
-
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-ArbitraryFileDeletion
-</td><td align="left">
-
-FileName
-
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryListing
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryCreation
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryMoving
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryDeletion
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-PotentialPathTraversal
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-RemoteCodeExecution
-</td><td align="left">
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-SQLInjection
-</td><td align="left">
-
-SqlCommon
-</td></tr><tr><td align="left">
-
-InsecureDirectObjectReferences
-</td><td align="left">
-
-ArbitraryStringData
-
-
-ArbitraryIntData
-</td></tr><tr><td align="left">
-
-LogForging
-</td><td align="left">
-
-LogEntry
-</td></tr><tr><td align="left">
-
-ResourceExhaustion
-</td><td align="left">
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-UncontrolledDataManipulation
-</td><td align="left">
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-IncorrectPermissionAssignmentForCriticalResource
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-CookieInjection
-</td><td align="left">
-
-HttpCookieName
-
-
-HttpCookieValue
-</td></tr><tr><td align="left">
-
-InsecureCookieScope
-</td><td align="left">
-
-HttpUri
-</td></tr><tr><td align="left">
-
-PersistentCookieExposing
-</td><td align="left">
-
-ArbitraryDateString
-
-
-ArbitraryIntData
-</td></tr><tr><td align="left">
-
-SensitiveCookieInHttpsSessionWithoutHttponlyAttribute
-</td><td align="left">
-
-HttpCookieValue
-</td></tr><tr><td align="left">
-
-SensitiveCookieInHttpsSessionWithoutSecureAttribute
-</td><td align="left">
-
-HttpCookieValue
-</td></tr><tr><td align="left">
-
-HttpHeaderInjection
-</td><td align="left">
-
-ArbitraryStringData
-
-
-HttpHeaderName
-
-
-HttpHeaderValue
-</td></tr><tr><td align="left">
-
-UnrestrictedFileUpload
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ExternalControlOfConfiguration
-</td><td align="left">
-
-ArbitraryStringData
-
-
-FileName
-</td></tr><tr><td align="left">
-
-BufferOverflow
-</td><td align="left">
-
-ArbitraryIntData
-</td></tr><tr><td align="left">
-
-ImproperValidationOfArrayIndex
-</td><td align="left">
-
-ArbitraryIntData
-</td></tr></tbody></table>
-
-
-**Java**
-
-<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
-
-vulnType
-</th><th align="left">
-
-vulnGrammar
-</th></tr></thead><tbody><tr><td align="left">
-
-RemoteCodeExecution
-</td><td align="left">
-
-ArbitraryStringData
-
-
-FileName
-
-
-XmlDocument
-
-
-JavaScriptCode
-
-
-LogEntry
-</td></tr><tr><td align="left">
-
-OpenRedirect
-</td><td align="left">
-
-HttpUri
-
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-XmlExternalEntity
-</td><td align="left">
-
-FileName
-
-
-ArbitraryStringData
-
-
-XmlDocument
-
-
-HttpUri
-</td></tr><tr><td align="left">
-
-ServerSideRequestForgery
-</td><td align="left">
-
-IpAddress
-
-
-HttpUri
-
-
-FileName
-
-
-Host
-
-
-Port
-</td></tr><tr><td align="left">
-
-CrossSiteScripting
-</td><td align="left">
-
-HtmlText
-
-
-ArbitraryStringData
-
-
-JavaScriptCode
-
-
-HtmlAttributeValue2
-
-
-HttpUri
-</td></tr><tr><td align="left">
-
-OSCommanding
-</td><td align="left">
-
-CommandLineArguments
-
-
-FileName
-</td></tr><tr><td align="left">
-
-SQLInjection
-</td><td align="left">
-
-SqlCommon
-</td></tr><tr><td align="left">
-
-TrustBoundaryViolation
-</td><td align="left">
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-PotentialPathTraversal
-</td><td align="left">
-
-FileName
-
-
-HttpUri
-</td></tr><tr><td align="left">
-
-PersistentCookieExposing
-</td><td align="left">
-
-ArbitraryIntData
-</td></tr><tr><td align="left">
-
-LocalFileInclusion
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-UnrestrictedFileUpload
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-DeserializationOfUntrustedData
-</td><td align="left">
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-ArbitraryFileCreation
-</td><td align="left">
-
-ArbitraryStringData
-
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryFileModification
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryFileReading
-</td><td align="left">
-
-ArbitraryStringData
-
-
-FileName
-
-
-HttpUri
-</td></tr><tr><td align="left">
-
-ArbitraryFileDeletion
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-HttpHeaderInjection
-</td><td align="left">
-
-HttpHeaderName
-
-
-HttpHeaderValue
-</td></tr><tr><td align="left">
-
-HttpRequestSplitting
-</td><td align="left">
-
-HttpHeaderValue
-</td></tr><tr><td align="left">
-
-HttpResponseSplitting
-</td><td align="left">
-
-HttpHeaderValue
-</td></tr><tr><td align="left">
-
-XPathInjection
-</td><td align="left">
-
-XPath
-</td></tr><tr><td align="left">
-
-LogForging
-</td><td align="left">
-
-LogEntry
-</td></tr><tr><td align="left">
-
-LdapInjection
-</td><td align="left">
-
-Ldap
-</td></tr><tr><td align="left">
-
-XQueryInjection
-</td><td align="left">
-
-Xquery
-</td></tr><tr><td align="left">
-
-ObjectInjection
-</td><td align="left">
-
-HttpUri
-</td></tr><tr><td align="left">
-
-InsecureDirectObjectReferences
-</td><td align="left">
-
-ArbitraryStringData
-
-
-ArbitraryIntData
-</td></tr><tr><td align="left">
-
-InsufficientSessionExpiration
-</td><td align="left">
-
-ArbitraryIntData
-</td></tr><tr><td align="left">
-
-RemoteFileInclusion
-</td><td align="left">
-
-HttpUri
-</td></tr><tr><td align="left">
-
-OrmInjection
-</td><td align="left">
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-CookieInjection
-</td><td align="left">
-
-HttpCookieName
-
-
-HttpCookieValue
-</td></tr><tr><td align="left">
-
-CrossSiteRequestForgery
-</td><td align="left">
-
-HttpUri
-</td></tr><tr><td align="left">
-
-IncorrectPermissionAssignmentForCriticalResource
-</td><td align="left">
-
-FileName
-
-
-FilePermissions
-</td></tr><tr><td align="left">
-
-ExternalControlOfConfiguration
-</td><td align="left">
-
-ArbitraryStringData
-</td></tr></tbody></table>
-
-
-**JavaScript/TypeScript**
-
-<table><caption>Возможные комбинации параметров vulnType и vulnGrammar</caption><colgroup><col style="width: 46.5%;"/><col style="width: 53.4%;"/></colgroup><thead><tr><th align="left">
-
-vulnType
-</th><th align="left">
-
-vulnGrammar
-</th></tr></thead><tbody><tr><td align="left">
-
-ArbitraryFileCreation
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryFileDeletion
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryFileModification
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryFileCopying
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryFileReading
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryCreation
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryListing
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryMoving
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-ArbitraryDirectoryDeletion
-</td><td align="left">
-
-FileName
-</td></tr><tr><td align="left">
-
-CrossSiteRequestForgery
-</td><td align="left">
-
-HttpUri
-</td></tr><tr><td align="left">
-
-CrossSiteScripting
-</td><td align="left">
-
-HtmlText
-
-
-HtmlAttributeValue2
-</td></tr><tr><td align="left">
-
-OSCommanding
-</td><td align="left">
-
-CommandLineArguments
-</td></tr><tr><td align="left">
-
-LogForging
-</td><td align="left">
-
-LogEntry
-</td></tr><tr><td align="left">
-
-OpenRedirect
-</td><td align="left">
-
-HttpUri
-</td></tr><tr><td align="left">
-
-ServerSideRequestForgery
-</td><td align="left">
-
-HttpUri
-</td></tr><tr><td align="left">
-
-SQLInjection
-</td><td align="left">
-
-SqlCommon
-
-
-MySql
-</td></tr><tr><td align="left">
-
-RemoteCodeExecution
-</td><td align="left">
-
-JavaScriptCode
-
-
-FileName
-</td></tr><tr><td align="left">
-
-NoSQLInjection
-</td><td align="left">
-
-MongoDB
-</td></tr><tr><td align="left">
-
-DeserializationOfUntrustedData
-</td><td align="left">
-
-JsonNodeSerialize
-</td></tr><tr><td align="left">
-
-UncontrolledDataManipulation
-</td><td align="left">
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-ResourceExhaustion
-</td><td align="left">
-
-ArbitraryStringData
-</td></tr><tr><td align="left">
-
-CookieInjection
-</td><td align="left">
-
-HttpCookieName
-
-
-HttpCookieValue
-</td></tr><tr><td align="left">
-
-HttpHeaderInjection
-</td><td align="left">
-
-HttpHeaderName
-
-
-HttpHeaderValue
-</td></tr><tr><td align="left">
-
-IncorrectPermissionAssignmentForCriticalResource
-</td><td align="left">
-
-FileName
-
-
-FilePermissions
-</td></tr></tbody></table>
-
+Каждому типу уязвимости, обнаруживаемой анализатором JSA, соответствует рекомендуемый грамматический контекст — окружение или условия, при которых уязвимость может существовать в системе. В таблицах ниже приведены соответствия, опубликованные для поддерживаемых анализаторов.
+
+Языковой сервер отдельно проверяет, доступен ли идентификатор в конкретной конструкции DSL. В частности, weakness- и secret-типы можно использовать как аргументы `filter`, но runtime DSL пока не принимает их в качестве аргумента `vulnType` оператора `Detect`, поскольку для них не реализованы отдельные операции.
+
+### .NET
+
+| `vulnType` | `vulnGrammar` |
+| --- | --- |
+| `ArbitraryFileCreation` | `FileName` |
+| `ArbitraryFileDeletion` | `FileName` |
+| `ArbitraryFileModification` | `FileName` |
+| `ArbitraryFileReading` | `FileName` |
+| `CrossSiteScripting` | `HtmlText`<br>`HtmlTitle`<br>`HtmlAttributeList`<br>`HtmlAttributeValue1`<br>`HtmlAttributeValue2`<br>`JavaScriptCode`<br>`SerializedJsonData` |
+| `DllInjection` | `FileName` |
+| `ExternalControlOfConfiguration` | `ConfigurationKey`<br>`ConfigurationValue` |
+| `HttpResponseSplitting` | `HttpHeaderValue` |
+| `LdapInjection` | `Ldap`<br>`Linq` |
+| `LocalFileInclusion` | `FileName` |
+| `LogForging` | `LogEntry` |
+| `OpenRedirect` | `HttpUri` |
+| `OSCommanding` | `FileName` |
+| `ServerSideRequestForgery` | `ConnectionStringItem`<br>`ConnectionStringText`<br>`NotApplicable`<br>`WebSocketUri` |
+| `SQLInjection` | `MySql`<br>`NpgSql`<br>`OracleSql`<br>`SqlCe`<br>`SqlCommon`<br>`Sqlite` |
+| `UnrestrictedFileUpload` | `FileName` |
+| `XmlExternalEntity` | `XmlDocument` |
+| `XPathInjection` | `XPath` |
+| `XQueryInjection` | `Xquery` |
+
+### Go
+
+| `vulnType` | `vulnGrammar` |
+| --- | --- |
+| `ArbitraryDirectoryCreation` | `FileName` |
+| `ArbitraryDirectoryDeletion` | `FileName` |
+| `ArbitraryDirectoryListing` | `FileName` |
+| `ArbitraryDirectoryMoving` | `FileName` |
+| `ArbitraryFileCreation` | `ArbitraryStringData`<br>`FileName` |
+| `ArbitraryFileDeletion` | `ArbitraryStringData`<br>`FileName` |
+| `ArbitraryFileModification` | `ArbitraryStringData`<br>`FileName` |
+| `ArbitraryFileReading` | `ArbitraryStringData`<br>`FileName` |
+| `BufferOverflow` | `ArbitraryIntData` |
+| `CookieInjection` | `HttpCookieName`<br>`HttpCookieValue` |
+| `CrossSiteScripting` | `HtmlText` |
+| `ExternalControlOfConfiguration` | `ArbitraryStringData`<br>`FileName` |
+| `HttpHeaderInjection` | `ArbitraryStringData`<br>`HttpHeaderName`<br>`HttpHeaderValue` |
+| `ImproperValidationOfArrayIndex` | `ArbitraryIntData` |
+| `IncorrectPermissionAssignmentForCriticalResource` | `FileName` |
+| `InsecureCookieScope` | `HttpUri` |
+| `InsecureDirectObjectReferences` | `ArbitraryIntData`<br>`ArbitraryStringData` |
+| `LogForging` | `LogEntry` |
+| `OpenRedirect` | `HttpUri` |
+| `OSCommanding` | `CommandLineArguments` |
+| `PersistentCookieExposing` | `ArbitraryDateString`<br>`ArbitraryIntData` |
+| `PotentialPathTraversal` | `FileName` |
+| `RemoteCodeExecution` | `ArbitraryStringData` |
+| `ResourceExhaustion` | `ArbitraryStringData` |
+| `SensitiveCookieInHttpsSessionWithoutHttponlyAttribute` | `HttpCookieValue` |
+| `SensitiveCookieInHttpsSessionWithoutSecureAttribute` | `HttpCookieValue` |
+| `ServerSideRequestForgery` | `HttpUri` |
+| `SQLInjection` | `SqlCommon` |
+| `UncontrolledDataManipulation` | `ArbitraryStringData` |
+| `UnrestrictedFileUpload` | `FileName` |
+
+### Java
+
+| `vulnType` | `vulnGrammar` |
+| --- | --- |
+| `ArbitraryFileCreation` | `ArbitraryStringData`<br>`FileName` |
+| `ArbitraryFileDeletion` | `FileName` |
+| `ArbitraryFileModification` | `FileName` |
+| `ArbitraryFileReading` | `ArbitraryStringData`<br>`FileName`<br>`HttpUri` |
+| `CrossSiteRequestForgery` | `HttpUri` |
+| `CrossSiteScripting` | `ArbitraryStringData`<br>`HtmlAttributeValue2`<br>`HtmlText`<br>`HttpUri`<br>`JavaScriptCode` |
+| `CookieInjection` | `HttpCookieName`<br>`HttpCookieValue` |
+| `DeserializationOfUntrustedData` | `ArbitraryStringData` |
+| `ExternalControlOfConfiguration` | `ArbitraryStringData` |
+| `HttpHeaderInjection` | `HttpHeaderName`<br>`HttpHeaderValue` |
+| `HttpRequestSplitting` | `HttpHeaderValue` |
+| `HttpResponseSplitting` | `HttpHeaderValue` |
+| `IncorrectPermissionAssignmentForCriticalResource` | `FileName`<br>`FilePermissions` |
+| `InsecureDirectObjectReferences` | `ArbitraryIntData`<br>`ArbitraryStringData` |
+| `InsufficientSessionExpiration` | `ArbitraryIntData` |
+| `LdapInjection` | `Ldap` |
+| `LocalFileInclusion` | `FileName` |
+| `LogForging` | `LogEntry` |
+| `ObjectInjection` | `HttpUri` |
+| `OpenRedirect` | `ArbitraryStringData`<br>`HttpUri` |
+| `OrmInjection` | `ArbitraryStringData` |
+| `OSCommanding` | `CommandLineArguments`<br>`FileName` |
+| `PersistentCookieExposing` | `ArbitraryIntData` |
+| `PotentialPathTraversal` | `FileName`<br>`HttpUri` |
+| `RemoteCodeExecution` | `ArbitraryStringData`<br>`FileName`<br>`JavaScriptCode`<br>`LogEntry`<br>`XmlDocument` |
+| `RemoteFileInclusion` | `HttpUri` |
+| `ServerSideRequestForgery` | `FileName`<br>`Host`<br>`HttpUri`<br>`IpAddress`<br>`Port` |
+| `SQLInjection` | `SqlCommon` |
+| `TrustBoundaryViolation` | `ArbitraryStringData` |
+| `UnrestrictedFileUpload` | `FileName` |
+| `XmlExternalEntity` | `ArbitraryStringData`<br>`FileName`<br>`HttpUri`<br>`XmlDocument` |
+| `XPathInjection` | `XPath` |
+| `XQueryInjection` | `Xquery` |
+
+### JavaScript/TypeScript
+
+| `vulnType` | `vulnGrammar` |
+| --- | --- |
+| `ArbitraryDirectoryCreation` | `FileName` |
+| `ArbitraryDirectoryListing` | `FileName` |
+| `ArbitraryDirectoryMoving` | `FileName` |
+| `ArbitraryFileCopying` | `FileName` |
+| `ArbitraryFileCreation` | `FileName` |
+| `ArbitraryFileDeletion` | `FileName` |
+| `ArbitraryFileModification` | `FileName` |
+| `ArbitraryFileReading` | `FileName` |
+| `ArbitraryDirectoryDeletion` | `FileName` |
+| `CookieInjection` | `HttpCookieName`<br>`HttpCookieValue` |
+| `CrossSiteRequestForgery` | `HttpUri` |
+| `CrossSiteScripting` | `HtmlAttributeValue2`<br>`HtmlText` |
+| `DeserializationOfUntrustedData` | `JsonNodeSerialize` |
+| `HttpHeaderInjection` | `HttpHeaderName`<br>`HttpHeaderValue` |
+| `IncorrectPermissionAssignmentForCriticalResource` | `FileName`<br>`FilePermissions` |
+| `LogForging` | `LogEntry` |
+| `NoSQLInjection` | `MongoDB` |
+| `OpenRedirect` | `HttpUri` |
+| `OSCommanding` | `CommandLineArguments` |
+| `RemoteCodeExecution` | `JavaScriptCode`<br>`FileName` |
+| `ResourceExhaustion` | `ArbitraryStringData` |
+| `ServerSideRequestForgery` | `HttpUri` |
+| `SQLInjection` | `SqlCommon`<br>`MySql` |
+| `UncontrolledDataManipulation` | `ArbitraryStringData` |
+
+### PHP
+
+| `vulnType` | `vulnGrammar` |
+| --- | --- |
+| `ArbitraryDirectoryCreation` | `FileName` |
+| `ArbitraryDirectoryDeletion` | `FileName` |
+| `ArbitraryDirectoryListing` | `FileName` |
+| `ArbitraryDirectoryMoving` | `FileName` |
+| `ArbitraryFileCopying` | `ArbitraryFileCopyingDestination`<br>`FileName` |
+| `ArbitraryFileCreation` | `ArbitraryFileNameShort`<br>`FileName` |
+| `ArbitraryFileDeletion` | `FileName` |
+| `ArbitraryFileModification` | `FileName` |
+| `ArbitraryFileReading` | `FileName` |
+| `CrossSiteScripting` | `HtmlText` |
+| `DeserializationOfUntrustedData` | `PharArchivePath`<br>`SerializedObject`<br>`SerializedArrayObject` |
+| `HttpResponseSplitting` | `HttpHeaderValue` |
+| `LdapInjection` | `Ldap` |
+| `LocalFileInclusion` | `FileName` |
+| `LogForging` | `LogEntry` |
+| `OpenRedirect` | `HttpUri` |
+| `OSCommanding` | `CommandLineArguments`<br>`CommandLineArgumentsSilent` |
+| `RemoteCodeExecution` | `PhpAssert`<br>`PhpCode`<br>`PhpInfo`<br>`PhpInfoBrackets` |
+| `ResourceExhaustion` | `ArbitraryIntData` |
+| `RemoteFileInclusion` | `HttpUri` |
+| `ServerSideRequestForgery` | `Cubrid`<br>`DB2`<br>`Host`<br>`HttpUri`<br>`IBase`<br>`Postgres`<br>`Sqlsrv`<br>`SSRFHostWithPort` |
+| `SmtpHeaderInjection` | `SmtpHeader` |
+| `SQLInjection` | `IBase`<br>`Ingres`<br>`Informix`<br>`MsSql`<br>`OracleSql`<br>`Postgres`<br>`SqlCommon`<br>`Sqlite`<br>`Sqlite3`<br>`Sybase` |
+| `UnrestrictedFileUpload` | `FileName` |
+| `XmlExternalEntity` | `HttpUri`<br>`XmlDocument` |
+| `XPathInjection` | `XPath` |
+
+### Python
+
+| `vulnType` | `vulnGrammar` |
+| --- | --- |
+| `ArbitraryDirectoryCreation` | `FileName` |
+| `ArbitraryDirectoryDeletion` | `FileName` |
+| `ArbitraryDirectoryListing` | `FileName` |
+| `ArbitraryDirectoryMoving` | `FileName` |
+| `ArbitraryFileCreation` | `ArbitraryIntData`<br>`FileName` |
+| `ArbitraryFileDeletion` | `ArbitraryIntData`<br>`FileName` |
+| `ArbitraryFileModification` | `ArbitraryIntData`<br>`FileName` |
+| `ArbitraryFileReading` | `ArbitraryIntData`<br>`FileName` |
+| `CookieInjection` | `HttpCookieName`<br>`HttpCookieValue` |
+| `CrossSiteScripting` | `HtmlText` |
+| `DeserializationOfUntrustedData` | `ArbitraryBinaryData` |
+| `HttpHeaderInjection` | `HttpHeaderName`<br>`HttpHeaderValue` |
+| `LocalFileInclusion` | `FileName` |
+| `LogForging` | `LogEntry` |
+| `ServerSideRequestForgery` | `HttpUri` |
+| `SQLInjection` | `SqlCommon` |
+| `OpenRedirect` | `HttpUri` |
+| `OSCommanding` | `CommandLineArguments` |
+| `RemoteCodeExecution` | `PythonCode` |
+| `UncontrolledDataManipulation` | `ArbitraryStringData` |
+
+### Ruby
+
+| `vulnType` | `vulnGrammar` |
+| --- | --- |
+| `ArbitraryFileCreation` | `FileName` |
+| `ArbitraryFileDeletion` | `FileName` |
+| `ArbitraryFileModification` | `FileName` |
+| `ArbitraryFileReading` | `FileName` |
+| `CookieInjection` | `ArbitraryStringData`<br>`HttpCookieName`<br>`HttpCookieValue` |
+| `CrossSiteScripting` | `HtmlText` |
+| `DeserializationOfUntrustedData` | `SerializedJsonData` |
+| `HttpHeaderInjection` | `ArbitraryStringData`<br>`HttpHeaderName`<br>`HttpHeaderValue` |
+| `InsecureDirectObjectReferences` | `ArbitraryStringData` |
+| `OpenRedirect` | `ArbitraryStringData`<br>`HttpHeaderName`<br>`HttpUri` |
+| `OSCommanding` | `CommandLineArguments` |
+| `SQLInjection` | `SqlCommon` |
+| `UncontrolledDataManipulation` | `ArbitraryStringData` |
+| `XmlExternalEntity` | `XmlDocument` |
+| `XmlEntityExpansion` | `XmlDocument` |

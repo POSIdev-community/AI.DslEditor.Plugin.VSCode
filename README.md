@@ -16,7 +16,7 @@ Support of colored highlighting for all JSA DSL constructs.
 
 **Smart autocomplete**
 
-Real-time autocompletion of language constructs that considers the context and syntax rules.
+Real-time autocompletion of language constructs that considers the context and syntax rules, including PVO grammars, vulnerability types, and filter-specific weakness and secret types.
 
 **Advanced code diagnostics**
 
@@ -24,21 +24,22 @@ The plugin provides a comprehensive three-level check that includes:
 * Syntax analysis:
    * Detection of errors in the code structure (unmatched brackets, missing semicolons, unfinished blocks)
    * Name validation for namespaces, classes, and functions
-   * Validation of arguments of the `Detect` and `filter` functions
+   * Validation of arguments of the `Detect` and `filter` functions, including multiple and chained filters
 * Semantic check:
    * Detection of duplicate declarations of classes and functions
    * Checking for unknown PVO Grammar IDs and vulnerability types
    * Analysis of data type matches and usage of allowed references
    * Detection of multiple `return` operators
    * Checking for duplicate names of function parameters and base classes
-   * Disabling of nested class and function declarations
+   * Detection of forbidden nested class and function declarations
 * Code quality analysis:
    * Detection of unnecessary `pass` operators
    * Detection of unused parameters in functions
 
 **Context tooltips**
 
-Hovering over a code element shows information about the syntax and semantics.
+Hovering over a code element shows information about the syntax and semantics, including current .NET and Ruby PVO
+grammars and filter-specific weakness and secret types.
 
 **Quick Fixes**
 
@@ -56,7 +57,7 @@ Automatic stylistic unification of code as you enter it (active by default for `
 
 ## Installation and use
 
-When you install the plugin, the language server is downloaded and started automatically. Server files are saved to the following locations:
+The extension is published in two variants. A platform-specific self-contained VSIX includes the language server and installs it without a network request. The regular platform-independent VSIX downloads the server automatically when it is first started. In both cases, server files are saved to the following locations:
 * In Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\{server-version}`
 * In Linux and macOS: `~/.config/jsa-dsl/language-server/{server-version}`
 
@@ -72,23 +73,23 @@ To install the language server manually:
 
 1. Download the language server archive using one of the links:
 
-   * For Windows: [download](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.Windows/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.zip)
+   * For Windows: [download](https://update.ptsecurity.ru/api/v6/products/JSA.DSL.LSP-Server.Windows/0.1.0.67/download/jsa.dsl.lsp.server-0.1.0.67.zip)
 
-   * For Linux: [download](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.Linux/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
+   * For Linux: [download](https://update.ptsecurity.ru/api/v6/products/JSA.DSL.LSP-Server.Linux/0.1.0.67/download/jsa.dsl.lsp.server-0.1.0.67.tar.gz)
 
-   * For macOS (Intel): [download](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.MacOS/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
+   * For macOS (Intel): [download](https://update.ptsecurity.ru/api/v6/products/JSA.DSL.LSP-Server.MacOS/0.1.0.67/download/jsa.dsl.lsp.server-0.1.0.67.tar.gz)
 
-   * For macOS (ARM): [download](https://update.ptsecurity.com/api/v6/products/JSA.DSL.LSP-Server.MacOS_arm64/0.1.0.62/download/jsa.dsl.lsp.server-0.1.0.62.tar.gz)
+   * For macOS (ARM): [download](https://update.ptsecurity.ru/api/v6/products/JSA.DSL.LSP-Server.MacOS_arm64/0.1.0.67/download/jsa.dsl.lsp.server-0.1.0.67.tar.gz)
 
    > **Note.** You can use **self-contained versions** of the extension for major platforms (Windows, Linux, macOS). These versions already include the language server and do not require additional downloads.
 
 2. Unpack the archive to one of the following locations:
 
-   * In Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\0.1.0.62\`
+   * In Windows: `%LOCALAPPDATA%\jsa-dsl\language-server\0.1.0.67\`
 
-   * In Linux: `~/.config/jsa-dsl/language-server/0.1.0.62/`
+   * In Linux: `~/.config/jsa-dsl/language-server/0.1.0.67/`
 
-   * In macOS: `~/.config/jsa-dsl/language-server/0.1.0.62/`
+   * In macOS: `~/.config/jsa-dsl/language-server/0.1.0.67/`
 
    > **Note.** You can also extract the server to any other directory and specify the path in the plugin settings using the `jsa.dsl.languageServer.customPath` parameter (see the [Plugin settings](#plugin-settings) section).
 
